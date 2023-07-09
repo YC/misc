@@ -1,0 +1,17 @@
+name: Build
+
+on:
+  push:
+    branches:
+  pull_request:
+
+jobs:
+  build:
+    name: Build & Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: make
+      - run: ./main
