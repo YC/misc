@@ -7,7 +7,7 @@ cargo build
 ```
 
 Then, `binding.rs` can be copied from somewhere within `target/debug/build`.\
-The accommodates compilation without `cargo`.
+This accommodates simple cases of compilation without `cargo`.
 
 ## Build for release
 With `cargo`:
