@@ -1,9 +1,10 @@
 name: Build
 
 on:
-  push:
-    branches:
-  pull_request:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  # pull_request:
 
 jobs:
   build:
@@ -14,4 +15,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
 
       - run: make
+        working-directory: ./rust-ffi
       - run: ./main
+        working-directory: ./rust-ffi
