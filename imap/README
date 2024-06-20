@@ -1,0 +1,6 @@
+IMAP Servers in Docker
+
+- To demonstrate IMAP responses
+
+Cyrus
+Reference: https://github.com/linagora/cyrus-docker
