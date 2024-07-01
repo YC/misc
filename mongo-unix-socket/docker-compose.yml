@@ -1,0 +1,15 @@
+services:
+  mongo:
+    image: docker.io/mongo:7
+    container_name: "mongo"
+    ports:
+      - "127.0.0.1:27017:27017"
+    command: mongod --quiet --filePermissions=0666 --bind_ip /var/run/sock/mongo.sock,0.0.0.0
+    environment:
+      - MONGO_INITDB_DATABASE=root
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./sock:/var/run/sock:rw
+    restart: on-failure:3

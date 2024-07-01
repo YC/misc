@@ -1,0 +1,19 @@
+Demo: MongoDB to Expose Unix Socket
+
+docker compose up will:
+- Initialise DB
+- Create test:test user
+- Create test collection with 1 document
+
+Connect
+mongosh mongodb://test:test@127.0.0.1:27017/test --authenticationDatabase root
+mongosh mongodb://test:test@sock%2Fmongo.sock/test --authenticationDatabase root
+
+test> show databases
+test  40.00 KiB
+
+test> show collections;
+test
+
+test> db.test.find({})
+[ { _id: ObjectId('6682afa669bc8cdc13149f48'), test: 'test' } ]
