@@ -21,6 +21,4 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 host.Services.GetRequiredService<Test>().Run();
-
-Console.Out.Flush();
-Console.Error.Flush();
+host.Dispose();

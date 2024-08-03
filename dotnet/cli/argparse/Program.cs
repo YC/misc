@@ -1,39 +1,41 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Binding;
-using System.CommandLine.Builder;
-using System.CommandLine.Hosting;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 
-var builder = new CommandLineBuilder(new TestCommand())
-    .UseDefaults()
-    .UseHost(host => {
-        host
-        .ConfigureLogging(logging => {
-            logging.AddConsole();
-            logging.AddFilter<ConsoleLoggerProvider>("Microsoft.Hosting.Lifetime", LogLevel.Error);
-        })
-        .ConfigureServices(services => {
-            services.AddScoped<TestRunner>();
-        })
-        .UseCommandHandler<TestCommand, TestHandler>();
-    });
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.AddScoped<TestRunner>();
+        services.AddScoped<TestCommand>();
+    })
+    .ConfigureLogging(logging =>
+    {
+        logging.AddConsole();
+    })
+    .Build();
 
-var parser = builder.Build();
-await parser.InvokeAsync(args);
+await host.Services.GetRequiredService<TestCommand>().InvokeAsync(args);
+host.Dispose();
 
 public class TestCommand : RootCommand {
-    public TestCommand()
+    private readonly TestRunner _runner;
+
+    public TestCommand(TestRunner runner)
     {
+        _runner = runner;
+
         var intArg = new Option<int>("--int-arg") { IsRequired = true };
         var stringArg = new Option<string?>("--string-arg");
         this.Description = "CommandLine Parsing Example";
         this.AddOption(intArg);
         this.AddOption(stringArg);
+        this.SetHandler(Execute, new ParseTestBinder(intArg, stringArg));
+    }
+
+    private void Execute(ParseTest test) {
+        _runner.Run(test);
     }
 }
 
@@ -44,24 +46,6 @@ public class TestRunner(ILogger<TestRunner> logger)
     public void Run(ParseTest parseTest) {
         _logger.LogInformation("Int: {val}", parseTest.IntArg);
         _logger.LogInformation("String: {val}", parseTest.StringArg);
-    }
-}
-
-public class TestHandler(TestRunner runner) : ICommandHandler {
-    private TestRunner _runner = runner;
-
-    public int IntArg { get; set; } = 0;
-    public string StringArg { get; set; } = "";
-
-    public int Invoke(InvocationContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<int> InvokeAsync(InvocationContext context) {
-        // TODO: ParseTest directly? https://github.com/dotnet/command-line-api/issues/1858
-        _runner.Run(new ParseTest { IntArg = IntArg, StringArg = StringArg });
-        return Task.FromResult<int>(0);
     }
 }
 
