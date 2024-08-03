@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -10,10 +8,12 @@ var host = Host.CreateDefaultBuilder(args)
     {
         services.AddScoped<Test>();
     })
-    .ConfigureLogging(logging => {
+    .ConfigureLogging(logging =>
+    {
         logging.AddConsole();
     })
-    .ConfigureAppConfiguration(config => {
+    .ConfigureAppConfiguration(config =>
+    {
         config.Sources.Clear();
         config.SetBasePath(AppContext.BaseDirectory);
         config.AddJsonFile("appsettings.json");
