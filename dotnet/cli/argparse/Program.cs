@@ -16,7 +16,7 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-await host.Services.GetRequiredService<TestCommand>().InvokeAsync(args);
+Environment.ExitCode = await host.Services.GetRequiredService<TestCommand>().InvokeAsync(args);
 host.Dispose();
 
 public class TestCommand : RootCommand {
