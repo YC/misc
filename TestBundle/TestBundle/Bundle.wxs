@@ -1,0 +1,20 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle UpgradeCode="{b7e335a0-e339-4831-a7cd-9cf12c10824b}" Name="TestBundle" Manufacturer="Test" Version="1.0.0.0">
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication LicenseUrl="" Theme="hyperlinkLicense" />
+    </BootstrapperApplication>
+
+    <!-- This is okay -->
+    <!--<Variable Name="Test" Value="NormalValue" />-->
+
+    <!-- This will cause Stack Overflow -->
+    <Variable Name="Test" Value="[Test]" Type="formatted" />
+
+    <WixVariable Id="TestVariable" Value="[Test]" />
+
+    <Chain>
+      <ExePackage Permanent="true" SourceFile="../publish/ConsoleApp1.exe" InstallArguments="!(wix.TestVariable)" Compressed="true" />
+    </Chain>
+  </Bundle>
+</Wix>
